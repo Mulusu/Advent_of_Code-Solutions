@@ -66,5 +66,4 @@ def part2(vents, mapsize):
     map = Map(mapsize)
     for vent in vents:
         map.add_vent(vent)
-    print(map.map)
     return map.count_overlaps()
