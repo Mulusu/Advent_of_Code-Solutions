@@ -6,20 +6,14 @@ def main(inputstr):
     ans2 = part2(inputs)
     return ans1, ans2
 
-
 def part1(inputs):
-    # Iterate all possible positions in an attempt to find the most fuel efficient one
-    minfuel = np.inf
-    for i in np.arange(min(inputs),max(inputs)+1):  # The optimal position is obviously between the min and max of where any of the crabs are already
-        fuel = sum(abs(inputs - i))
-        minfuel = min(fuel, minfuel)
-    return minfuel
+    options = np.arange(min(inputs), max(inputs)+1)         # Possible positions to consider
+    steps = np.stack([abs(inputs - i) for i in options])    # Number of steps to reach each position
+    fuel = np.sum(steps, axis=1)                            # Total fuel consumed for moving to any position
+    return int(np.min(fuel))                                # Return the lowest total fuel consumption
 
 def part2(inputs):
-    # Iterate all possible positions in an attempt to find the most fuel efficient one
-    minfuel = np.inf
-    for i in np.arange(min(inputs),max(inputs)+1):  # The optimal position is obviously between the min and max of where any of the crabs are already
-        steps = abs(inputs - i)
-        fuel = int(np.sum(steps*(steps+1)/2))      # sum(range(n)) = n*(n+1) / 2
-        minfuel = min(fuel, minfuel)
-    return minfuel
+    options = np.arange(min(inputs), max(inputs)+1)         # Possible positions to consider
+    steps = np.stack([abs(inputs - i) for i in options])    # Number of steps to reach each position
+    fuel = np.sum((steps*(steps+1))/2, axis=1)              # Total fuel consumed for moving to any position
+    return int(np.min(fuel))                                # Return the lowest total fuel consumption

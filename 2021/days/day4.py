@@ -2,7 +2,7 @@ import numpy as np
 
 def main(inputsrt):
     nums, boardstrs = inputsrt.split("\n",1)
-    nums = nums.split(",")
+    nums = [int(i) for i in nums.split(",")]
     boardstrs = boardstrs.strip().split("\n\n")
     boards = []
     for b in boardstrs:
@@ -12,24 +12,20 @@ def main(inputsrt):
 
 class Board:
     def __init__(self,boardstr):
-        self.board = np.zeros((5,5),np.int8)
-        boardstr = boardstr.split("\n")
-        for x in range(5):
-            nums = boardstr[x].strip(" ").replace("  "," ").split(" ") # Strip ends of lines, remove double spaces, split
-            for y in range(5):
-                self.board[x][y] = int(nums[y])
-        self.matched = np.zeros((5,5),np.bool)
-        self.lastmatch = 0
+        # Separate all the numbers from the list
+        nums = [int(i) for b in boardstr.split("\n") for i in b.strip(" ").replace("  "," ").split(" ")]
+        self.board = np.array(nums).reshape([5,5])  # Reshape the board to what it needs to be
+        self.matched = np.zeros((5,5),np.bool)      # Table to know which positions were already matched
+        self.lastmatch = 0                          # Last matched number. Needed for counting score
         self.has_won = False
 
     # Check if the number is on board and mark it. Return True if this wins the game
     def check(self,num):
-        for x in range(5):
-            for y in range(5):
-                if self.board[x][y] == int(num):
-                    self.matched[x][y] = True
-                    self.lastmatch = int(num)
-                    return self.check_win()
+        match = self.board == num
+        self.matched = self.matched | match
+        if match.any():
+            self.lastmatch = num
+            self.check_win()
 
     def check_win(self):
         for x in range(5):
@@ -37,15 +33,10 @@ class Board:
             countcol = np.count_nonzero(self.matched[:,x])
             if countrow == 5 or countcol == 5:
                 self.has_won = True
-                return True
-        return False
 
     def count_score(self):
         score = 0
-        for x in range(5):
-            for y in range(5):
-                if not self.matched[x][y]:
-                    score += self.board[x][y]
+        score = np.sum(self.board[self.matched != True])
         return score * self.lastmatch
 
 def solve(nums, boards):
@@ -54,10 +45,10 @@ def solve(nums, boards):
         for board in boards:
             if board.has_won:
                 continue        # No need to keep checking already won ones
-            win = board.check(num)
+            board.check(num)
 
             # Wins the game
-            if win:
+            if board.has_won:
                 wins += 1
                 if wins == 1: # First win
                     ans1 = board.count_score()
