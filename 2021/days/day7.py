@@ -1,7 +1,7 @@
 import numpy as np
 
 def main(inputstr):
-    inputs = np.array([int(i) for i in inputstr.split(",")])
+    inputs = np.array(list(map(int, inputstr.split(","))))
     ans1 = part1(inputs)
     ans2 = part2(inputs)
     return ans1, ans2
