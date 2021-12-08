@@ -72,3 +72,4 @@ def part2(vents : list, map : Map):
             continue        # Already added to the map in part 1
         map.add_vent(vent)
     return map.count_overlaps()
+    

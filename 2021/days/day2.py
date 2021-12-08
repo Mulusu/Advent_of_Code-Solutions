@@ -32,3 +32,4 @@ def part2(inputs):
         elif dir == "up":
             aim -= int(amount)
     return x * y
+    

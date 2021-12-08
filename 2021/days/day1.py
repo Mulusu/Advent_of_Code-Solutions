@@ -23,3 +23,4 @@ def part2(inputs):
             increased += 1
         prev = window_sum
     return increased
+    

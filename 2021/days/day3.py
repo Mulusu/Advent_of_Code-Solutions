@@ -53,3 +53,4 @@ def part2(inputs):
     ogr = filter(inputs.copy(),0)
     csr = filter(inputs.copy(),1)
     return int(ogr, base=2) * int(csr, base=2)
+    
