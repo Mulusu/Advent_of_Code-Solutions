@@ -27,7 +27,7 @@ def map_caves(map, current, visited, small_visited):
             continue
         if n in visited:
             if not small_visited:
-                routes += map_caves(map, n, visited, True)
+                routes += map_caves(map, n, visited.copy(), True)
             continue
         routes += map_caves(map, n, visited.copy(), small_visited)
     return routes
