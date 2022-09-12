@@ -34,6 +34,10 @@ int main(){
 			case 2:
 				answer = day2(input);
 				break;
+				
+			case 4:
+				answer = day4(input);
+				break;
 		}
 		std::cout << "Day " << i << "\n  Part1: " << answer[0] << "\n  Part2: " << answer[1] << std::endl;
 	}

@@ -7,6 +7,6 @@ struct Answers{
 } answer;
 
 struct Answers day1(FILE*);
-struct Answers day2(FILE*);
+struct Answers day3(FILE*);
 
 #endif

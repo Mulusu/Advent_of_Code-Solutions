@@ -1,73 +1,64 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../days.h"
+#include "../odddays.h"
 
-int part1(FILE* input){
-	int answer = 0;
-	char buffer[256];
-	while(fgets(buffer,256,input)){
+int* parse_changes(FILE* input){
+	int count = 1;
+	int* changes = NULL;
+	while(1){
+		char buffer[256];
+		char* ret = fgets(buffer, 256, input);
+		if (ret == NULL){
+			return changes;		// EOF
+		}
 		buffer[strcspn(buffer, "\n")] = 0;
-		int change = atoi(buffer);
-		answer += change;
+		changes = realloc(changes,(count+1)*sizeof(int));
+		changes[count] = atoi(buffer);
+		changes[0] = count;
+		count++;
+	}
+	return changes;
+}
+
+int day1_part1(int* changes){
+	int answer = 0;
+	for (int i = 1; i <= changes[0]; i++){
+		answer += changes[i];
 	}
 	return answer;
 }
+
+
 
 typedef struct LinkedList{
 	int value;
 	void* next;
 } linked;
 
-// Free the allocated memory
-void clean(linked* list){
-	linked* nextptr = list;
-	while (nextptr != NULL){
-		linked* thisptr = nextptr;
-		nextptr = thisptr->next;
-		free(thisptr);
-	}
-}
-
-int part2(FILE* input){
+int day1_part2(int* changes){
 	int answer = 0;
 	int current_pos = 0;
-	int has_answer = 0;
-	linked* list = malloc(sizeof(linked));
-	list->value = current_pos;
-	list->next = NULL;
+	int* poslist = malloc(sizeof(int));
+	poslist[0] = current_pos;
+	int lenpos = 1;
 	
-	while(has_answer == 0){
-		rewind(input); // Reset
-		char buffer[256];
-		while(fgets(buffer,256,input)){
-			buffer[strcspn(buffer, "\n")] = 0;
-			int change = atoi(buffer);
-			current_pos += change;
+	while(1){
+		for (int i = 1; i <= changes[0]; i++){
+			current_pos += changes[i];
 			
 			// Check the list if we have been here already
-			linked* curlist = list;
-			while(1){
-				// If not yet in the list, append this position to the end
-				if (curlist->next == NULL){
-					linked* newEntry = malloc(sizeof(linked));
-					newEntry->value = current_pos;
-					curlist->next = newEntry;
-					newEntry->next = NULL;
-					break;
-				}
-				
-				if (curlist->value == current_pos){
-					has_answer = 1;
+			for (int x = 0; x < lenpos; x++){
+				if (poslist[x] == current_pos){		// We have been here before
 					answer = current_pos;
-					
-					clean(list);
-					
+					free(poslist);
 					return answer;
 				}
-				
-				curlist = curlist->next;
 			}
+			// Add new value to list of positions
+			lenpos++;
+			poslist = realloc(poslist, lenpos*sizeof(int));
+			poslist[lenpos-1] = current_pos;
 		}
 	}
 	return answer;
@@ -75,7 +66,8 @@ int part2(FILE* input){
 
 struct Answers day1(FILE* input){
 	struct Answers answer;
-	answer.part1 = part1(input);
-	answer.part2 = part2(input);
+	int* changes = parse_changes(input);
+	answer.part1 = day1_part1(changes);
+	answer.part2 = day1_part2(changes);
 	return answer;
 }

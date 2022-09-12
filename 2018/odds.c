@@ -15,12 +15,12 @@ char* get_filename(int daynum){
 	sprintf(filename, "inputs/input");
 	sprintf(filename+12, "%d", daynum);
 	strcat(filename, ".txt");
-//	strcat(filename, '\0'); // Ending zero
+//	strcat(filename, 0); // Ending zero
 	return filename;
 }
 
 int main(){
-	for(int i=1;i<25;i+=2){
+	for(int i=3;i<25;i+=2){
 		char* filename = get_filename(i);
 		if (!file_exists(filename)){
 			free(filename);
@@ -37,10 +37,10 @@ int main(){
 			case 1:
 				answer = day1(file);
 				break;
-/*			case 3:
+			case 3:
 				answer = day3(file);
 				break;
-			case 5:
+/*			case 5:
 				answer = day5(file);
 				break;
 			case 7:
